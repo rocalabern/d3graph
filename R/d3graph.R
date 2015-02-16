@@ -26,10 +26,10 @@ library(RJSONIO)
 #' @export
 d3.graph <- function(
   df,
-  nodeMinSize = 8,
+  nodeMinSize = 6,
   nodeMaxSize = 12,
-  edgeMinStroke = 0,
-  edgeMaxStroke = 0.2,
+  edgeMinStroke = 0.05,
+  edgeMaxStroke = 0.25,
   circleFillOpacity = 1.0,
   circleStroke = "black",
   circleStrokeWidth = 1,
