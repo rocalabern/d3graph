@@ -104,3 +104,18 @@ d3.graph <- function(
   }
   htmlwidgets::createWidget("d3graph", x = list(links = list_links, options = options), width = width, height = height)
 }
+
+#' Widget output function for use in Shiny
+#'
+#' @export
+d3.graphOutput <- function(outputId, width = '100%', height = '400px'){
+  shinyWidgetOutput(outputId, 'd3graph', width, height, package = 'd3graph')
+}
+
+#' Widget render function for use in Shiny
+#'
+#' @export
+renderD3.graph <- function(expr, env = parent.frame(), quoted = FALSE) {
+  if (!quoted) { expr <- substitute(expr) } # force quoted
+  shinyRenderWidget(expr, d3.graphOutput, env, quoted = TRUE)
+}
