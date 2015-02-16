@@ -4,7 +4,8 @@
 \alias{d3.graph}
 \title{d3.graph}
 \usage{
-d3.graph(df, circleFillOpacity = 1, circleStroke = "black",
+d3.graph(df, nodeMinSize = 8, nodeMaxSize = 12, edgeMinStroke = 0,
+  edgeMaxStroke = 0.2, circleFillOpacity = 1, circleStroke = "black",
   circleStrokeWidth = 1, colors = c("#FF475C", "#F65C44", "#EE8442",
   "#E5A940", "#DDCB3D", "#BFD53B", "#93CC39", "#69C436", "#43BB34", "#32B344",
   "#30AA5F"), width = NULL, height = NULL)

@@ -26,6 +26,10 @@ library(RJSONIO)
 #' @export
 d3.graph <- function(
   df,
+  nodeMinSize = 8,
+  nodeMaxSize = 12,
+  edgeMinStroke = 0,
+  edgeMaxStroke = 0.2,
   circleFillOpacity = 1.0,
   circleStroke = "black",
   circleStrokeWidth = 1,
@@ -35,12 +39,42 @@ d3.graph <- function(
   if (length(colors)==1) {
     colors = c(colors, colors)
   }
-  if ("sourceColor" %in% colnames(df) && "targetColor" %in% colnames(df)) {
-    vmax <- max(df$sourceColor, df$targetColor)
-    vmin <- min(df$sourceColor, df$targetColor)
+  if ("sourceColor" %in% colnames(df) || "targetColor" %in% colnames(df)) {
+    vec = NULL
+    if ("sourceColor" %in% colnames(df)) vec = c(vec, df$sourceColor)
+    if ("targetColor" %in% colnames(df)) vec = c(vec, df$targetColor)
+    vmax <- max(vec)
+    vmin <- min(vec)
     if (vmax>vmin) {
-      df$sourceColor = (df$sourceColor-vmin)/(vmax-vmin)
-      df$targetColor = (df$targetColor-vmin)/(vmax-vmin)
+      if ("sourceColor" %in% colnames(df)) df$sourceColor = (df$sourceColor-vmin)/(vmax-vmin)
+      if ("targetColor" %in% colnames(df)) df$targetColor = (df$targetColor-vmin)/(vmax-vmin)
+    } else {
+      df$sourceColor = 0.5
+      df$targetColor = 0.5
+    }
+  }
+  if ("sourceSize" %in% colnames(df) || "targetSize" %in% colnames(df)) {
+    vec = NULL
+    if ("sourceSize" %in% colnames(df)) vec = c(vec, df$sourceSize)
+    if ("targetSize" %in% colnames(df)) vec = c(vec, df$targetSize)
+    vmax <- max(vec)
+    vmin <- min(vec)
+    if (vmax>vmin) {
+      if ("sourceSize" %in% colnames(df)) df$sourceSize = nodeMinSize+(nodeMaxSize-nodeMinSize)*(df$sourceSize-vmin)/(vmax-vmin)
+      if ("targetSize" %in% colnames(df)) df$targetSize = nodeMinSize+(nodeMaxSize-nodeMinSize)*(df$targetSize-vmin)/(vmax-vmin)
+    } else {
+      df$sourceSize = nodeMinSize+(nodeMaxSize-nodeMinSize)*0.5
+      df$targetSize = nodeMinSize+(nodeMaxSize-nodeMinSize)*0.5
+    }
+  }
+  if ("weight" %in% colnames(df)) {
+    vec = df$weight
+    vmax <- max(vec)
+    vmin <- min(vec)
+    if (vmax>vmin) {
+      df$weight = edgeMinStroke+(edgeMaxStroke-edgeMinStroke)*(df$weight-vmin)/(vmax-vmin)
+    } else {
+      df$weight = edgeMinStroke+(edgeMaxStroke-edgeMinStroke)*0.5
     }
   }
 
