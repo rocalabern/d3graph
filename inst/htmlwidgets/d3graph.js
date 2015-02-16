@@ -6,23 +6,25 @@ HTMLWidgets.widget({
 
   initialize: function(el, width, height) {
     d3.select(el).append("svg")
-    .attr("width", width)
-    .attr("height", height);
+      .attr("width", width)
+      .attr("height", height);
 
     return d3.layout.force();
-
   },
 
   resize: function(el, width, height, force) {
     d3.select(el).select("svg")
-        .attr("width", width)
-        .attr("height", height);
+      .attr("width", width)
+      .attr("height", height);
 
     force.size([width, height]).resume();
   },
 
-  renderValue: function(el, links, force) {
-    var colors =  ["#FF475C","#F65C44","#EE8442","#E5A940","#DDCB3D","#BFD53B","#93CC39","#69C436","#43BB34","#32B344","#30AA5F"];
+  renderValue: function(el, x, force) {
+    var links = x.links;
+    var options = x.options;
+
+    var colors =  options.colors;
     var nodeColor = d3.scale.quantize().domain([0, 1]).range(colors);
 
     var nodes = {};
@@ -30,11 +32,11 @@ HTMLWidgets.widget({
     // Compute the distinct nodes from the links.
     links.forEach(function(link) {
       link.source = nodes[link.source] || (nodes[link.source] = {id: link.source, name: link.source, label: link.sourceLabel, size: link.sourceSize, color: nodeColor(link.sourceColor), weight: link.weight});
-      link.target = nodes[link.target] || (nodes[link.target] = {id: link.target, name: link.target, label: link.targetLabel, size: link.targetSize, color: nodeColor(link.targetColor), weight: link.weigth});
+      link.target = nodes[link.target] || (nodes[link.target] = {id: link.target, name: link.target, label: link.targetLabel, size: link.targetSize, color: nodeColor(link.targetColor), weight: link.weight});
     });
 
-    var width = 1000,
-        height = 600;
+    var width = el.offsetWidth;
+    var height = el.offsetHeight;
 
     force
     	.nodes(d3.values(nodes))
@@ -68,7 +70,10 @@ HTMLWidgets.widget({
 
     node.append("circle")
       .attr("r", function(d) { return d.size; })
-    	.attr("fill", function(d) { return d.color; });
+    	.attr("fill", function(d) { return d.color; })
+      .attr('fill-opacity', options.circleFillOpacity)
+      .attr("stroke", options.circleStroke)
+      .attr("stroke-width", options.circleStrokeWidth);
 
     node.append("text")
     	.attr("class", "label")
@@ -101,7 +106,7 @@ HTMLWidgets.widget({
     function mouseover() {
       d3.select(this).select("circle").transition()
         .duration(750)
-        .attr("r", function(d) { return d.size*1.2; })
+        .attr("r", function(d) { return d.size*1.4; })
     	  .attr("fill", function(d) { return d3.rgb(d.color).brighter().toString(); });
 
       d3.select(this).select(".label")

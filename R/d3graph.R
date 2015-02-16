@@ -1,16 +1,72 @@
 library(RJSONIO)
 
+#' @title d3.graph
+#' @description
+#' \code{d3.graph} creates and htmlwidgets using force networks in D3. Inputs must be a data.frame in some specific format.
+#' @details
+#' Inputs must be a data.frame, not data.table. It is expected to fix this in the future.
+#' @param df A data.frame which contains graph data. Some columns are expected. Every row is an edge. \cr
+#' \itemize{
+#' \item{"source"}{Required column. ID or Label of source/from node of the edge.}
+#' \item{"target"}{Required column. ID or Label of target/to node of the edge.}
+#' \item{"sourceLabel"}{Optional column. Label of source/from node of the edge}
+#' \item{"targetLabel"}{Optional column. Label of target/to node of the edge}
+#' \item{"sourceSize"}{Optional column. Size of source node of the edge. ize about 5-10 plots better.}
+#' \item{"targetSize"}{Optional column. Size of target node of the edge. ize about 5-10 plots better.}
+#' \item{"weight"}{Optional column. Weight of the edge.}
+#' }
+#' @param circleFillOpacity Opacity of nodes.
+#' @param circleStroke Color of stroke of nodes. In any format an html can understand.
+#' @param circleStrokeWidth Size of stroke of nodes.
+#' @param colors Array of colors in any format an html can understand.
+#' @param width Width of svg
+#' @param height Height of svg
+#' @return An htmlwidget.
 #' @import htmlwidgets
 #' @export
-graph <- function(df,
-                  width = NULL, height = NULL) {
-  x <- list()
+d3.graph <- function(
+  df,
+  circleFillOpacity = 1.0,
+  circleStroke = "black",
+  circleStrokeWidth = 1,
+  colors = c("#FF475C","#F65C44","#EE8442","#E5A940","#DDCB3D","#BFD53B","#93CC39","#69C436","#43BB34","#32B344","#30AA5F"),
+  width = NULL, height = NULL) {
+
+  if (length(colors)==1) {
+    colors = c(colors, colors)
+  }
+  if ("sourceColor" %in% colnames(df) && "targetColor" %in% colnames(df)) {
+    vmax <- max(df$sourceColor, df$targetColor)
+    vmin <- min(df$sourceColor, df$targetColor)
+    if (vmax>vmin) {
+      df$sourceColor = (df$sourceColor-vmin)/(vmax-vmin)
+      df$targetColor = (df$targetColor-vmin)/(vmax-vmin)
+    }
+  }
+
+  options = list(
+    circleFillOpacity = circleFillOpacity,
+    circleStroke = circleStroke,
+    circleStrokeWidth = circleStrokeWidth,
+    colors = colors
+  )
+
+  list_links <- list()
   for (i in 1:nrow(df)) {
     link <- list()
+
+    link[["sourceLabel"]] <- df[i,"source"]
+    link[["targetLabel"]] <- df[i,"target"]
+    link[["sourceColor"]] <- 0.5
+    link[["sourceSize"]] <- 10
+    link[["targetColor"]] <- 0.5
+    link[["targetSize"]] <- 10
+    link[["weight"]] <- 0.2
+
     for (label in colnames(df)) {
       link[[label]] <- df[i,label]
     }
-    x[[i]] <- link
+    list_links[[i]] <- link
   }
-  htmlwidgets::createWidget("d3graph", x, width = width, height = height)
+  htmlwidgets::createWidget("d3graph", x = list(links = list_links, options = options), width = width, height = height)
 }
