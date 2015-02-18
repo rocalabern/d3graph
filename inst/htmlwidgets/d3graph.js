@@ -9,6 +9,8 @@ HTMLWidgets.widget({
       .attr("width", width)
       .attr("height", height);
 
+    d3.select(el).select("svg").selectAll("*").remove();
+
     return d3.layout.force();
   },
 
@@ -26,6 +28,8 @@ HTMLWidgets.widget({
 
     var colors =  options.colors;
     var nodeColor = d3.scale.quantize().domain([0, 1]).range(colors);
+
+    d3.select(el).select("svg").selectAll("*").remove();
 
     var nodes = {};
 
