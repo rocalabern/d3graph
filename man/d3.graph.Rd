@@ -38,7 +38,7 @@ d3.graph(df, nodeMinSize = 6, nodeMaxSize = 12, edgeMinStroke = 0.05,
 An htmlwidget.
 }
 \description{
-\code{d3.graph} creates and htmlwidgets using force networks in D3. Inputs must be a data.frame in some specific format.
+\code{d3.graph} createss and htmlwidgets using force networks in D3. Inputs must be a data.frame in some specific format.
 }
 \details{
 Inputs must be a data.frame, not data.table. It is expected to fix this in the future.
