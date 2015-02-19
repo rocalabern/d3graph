@@ -2,7 +2,7 @@ library(RJSONIO)
 
 #' @title d3.graph
 #' @description
-#' \code{d3.graph} createss and htmlwidgets using force networks in D3. Inputs must be a data.frame in some specific format.
+#' \code{d3.graph} creates and htmlwidgets using force networks in D3. Inputs must be a data.frame in some specific format.
 #' @details
 #' Inputs must be a data.frame, not data.table. It is expected to fix this in the future.
 #' @param df A data.frame which contains graph data. Some columns are expected. Every row is an edge. \cr
